@@ -25,6 +25,35 @@ class Line:
             [0,0,1/self.D,1]
         ])
         return m
+    
+    def get_projected_point(self, point):
+        r_matrix = point.xyz_to_matrix()
+        projection = np.dot(self.get_projection_matrix(), r_matrix)
+        p_x = int(projection[0][0])
+        p_y = int(projection[1][0])
+        
+        return (p_x, p_y)
+    
+    def if_line_horizontal(self):
+        return self.start.y == self.end.y
+    
+    def find_x_for_y(self, y):
+        if self.start.y == self.end.y:
+            return self.start.x
+        if self.start.x - self.end.x != 0:
+            a = (self.start.y - self.end.y) / (self.start.x - self.end.x)
+            b = self.start.y - a * self.start.x
+            return (y - b) / a
+        
+    def check_if_in_line(self, x):
+        if self.start.x > self.end.x:
+            if self.start.x >= x and self.end.x <= x:
+                return True
+        else:
+            if self.start.x <= x and self.end.x >= x:
+                return True
+            
+        return False
         
     def draw_line(self):
         if not (self.start.z < 0 or self.end.z < 0):

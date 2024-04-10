@@ -3,7 +3,7 @@ import pygame as pg
 import sys
 from wall import Wall
 from point import Point
-from line_scaner import LineScaner
+from line_scaner1 import LineScaner
 from trans_matrix import TransformationMatrix
 from math import *
 
@@ -36,26 +36,26 @@ def main():
     scaner = LineScaner(screen, walls, lines)
     dispaly = True
     while dispaly:
-        # scaner.scan()
+        scaner.scan()
         # screen.fill(GRAY)
         # scaner.scan()
         # walls = scaner.scan_tk1()
-        scaner.z_buffering()
+        # scaner.z_buffering()
         # for wall in walls:
         #     wall.draw_wall_with_fill()
         # colors_matrix = np.full((800, 600, 3), (255, 255, 255), dtype=np.uint8)
         # pg.surfarray.blit_array(screen, colors_matrix)
-        walls[0].print_polygon_structure()
-        print(walls[0].points[0].x, walls[0].points[0].y, walls[0].points[0].z)
-        x, y = walls[0].points[0].cordinate_to_print()
-        print(int(x), int(y))
-        # x,y,z = walls[0].points[0].print_to_coordinate(x, y)
-        x,y,z = Point.from_screen_coordinates(x, y)
-        print(int(x), int(y), int(z))
-        if walls[0].point_inside_polygon(400, 300):
-            pg.draw.circle(screen, COLOR, (400, 300), 50, 3)
+        # walls[0].print_polygon_structure()
+        # print(walls[0].points[0].x, walls[0].points[0].y, walls[0].points[0].z)
+        # x, y = walls[0].points[0].cordinate_to_print()
+        # print(int(x), int(y))
+        # # x,y,z = walls[0].points[0].print_to_coordinate(x, y)
+        # x,y,z = Point.from_screen_coordinates(x, y)
+        # print(int(x), int(y), int(z))
+        # if walls[0].point_inside_polygon(400, 300):
+        #     pg.draw.circle(screen, COLOR, (400, 300), 50, 3)
             
-        walls[0].points_in_triangle()
+        # walls[0].points_in_triangle()
         
         
         pg.draw.line(screen, COLOR, (S_WIDTH/2-25, S_HEIGHT/2), (S_WIDTH/2+25, S_HEIGHT/2), 2)
