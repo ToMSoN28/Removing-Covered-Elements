@@ -53,6 +53,8 @@ class Wall:
     def points_transformation(self, tranfromation_matrix):
         for point in self.points:
             point.get_transformation(tranfromation_matrix)
+        for point in self.punkty_wewnatrz:
+            point.get_transformation(tranfromation_matrix)
             
     def zoom_transformation(self, value):
         for point in self.points:
@@ -75,6 +77,63 @@ class Wall:
                 if line[0][0] + (y - line[0][1]) / (line[1][1] - line[0][1]) * (line[1][0] - line[0][0]) <= x:
                     crossings += 1
         return crossings % 2 == 1
+    
+    def points_in_triangle(self):
+            # Obliczamy wektory boczne trójkąta
+            v1 = np.array((self.points[1].x, self.points[1].y, self.points[1].z)) - np.array((self.points[0].x, self.points[0].y, self.points[0].z))
+            v2 = np.array((self.points[2].x, self.points[2].y, self.points[2].z)) - np.array((self.points[0].x, self.points[0].y, self.points[0].z))
+            
+            # Obliczamy normalną do płaszczyzny trójkąta
+            normal = np.cross(v1, v2)
+            
+            # Obliczamy równanie płaszczyzny trójkąta w postaci Ax + By + Cz + D = 0
+            A, B, C = normal
+            D = np.dot(normal, np.array((self.points[0].x, self.points[0].y, self.points[0].z)))
+            
+            # Wyznaczamy minimalną i maksymalną wartość dla każdego wymiaru (x, y, z)
+            min_x = min(self.points[0].x, self.points[1].x, self.points[2].x)
+            max_x = max(self.points[0].x, self.points[1].x, self.points[2].x)
+            min_y = min(self.points[0].y, self.points[1].y, self.points[2].y)
+            max_y = max(self.points[0].y, self.points[1].y, self.points[2].y)
+            min_z = min(self.points[0].z, self.points[1].z, self.points[2].z)
+            max_z = max(self.points[0].z, self.points[1].z, self.points[2].z)
+            
+            self.punkty_wewnatrz = []
+            # Sprawdzamy wszystkie punkty wewnątrz obszaru ograniczonego przez trójkąt
+            for x in range(int(min_x), int(max_x) + 1):
+                for y in range(int(min_y), int(max_y) + 1):
+                    for z in range(int(min_z), int(max_z) + 1):
+                        try:
+                            # Obliczamy wartość równania płaszczyzny dla aktualnego punktu
+                            wartosc = A * x + B * y + C * z - D
+                            # Jeśli wartość jest bliska zeru, punkt należy do płaszczyzny trójkąta
+                            if abs(wartosc) < 0.001:
+                                v0 = v2
+                                v2 = np.array([x,y,z,])-np.array((self.points[0].x, self.points[0].y, self.points[0].z))
+                                
+                                # Obliczamy współczynniki barycentryczne
+                                dot00 = np.dot(v0, v0)
+                                dot01 = np.dot(v0, v1)
+                                dot02 = np.dot(v0, v2)
+                                dot11 = np.dot(v1, v1)
+                                dot12 = np.dot(v1, v2)
+                                
+                                # Obliczamy współczynniki barycentryczne
+                                invDenom = 1 / (dot00 * dot11 - dot01 * dot01)
+                                u = (dot11 * dot02 - dot01 * dot12) * invDenom
+                                v = (dot00 * dot12 - dot01 * dot02) * invDenom
+                                
+                                # Sprawdzamy czy punkt jest wewnątrz trójkąta
+                                if (u >= 0) and (v >= 0) and (u + v <= 1):
+                                    point = Point(x, y, z)
+                                    # point.to_string()
+                                    self.punkty_wewnatrz.append(point)
+                        except ZeroDivisionError:
+                            continue
+                        except OverflowError:
+                            continue
+            
+
         
             
             

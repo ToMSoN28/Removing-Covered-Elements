@@ -12,6 +12,9 @@ class Point:
         self.y = y
         self.z = z
         
+    def to_string(self):
+        print(self.z, self.y, self.z)
+        
     def get_projection_matrix(self):
         m = np.matrix([
             [1,0,0,0],
@@ -25,6 +28,9 @@ class Point:
         start_x = ((self.x * self.D) / (self.z + self.D)) + s_width/2
         start_y = ((self.y * self.D) / (self.z + self.D)) - s_height/2
         return (start_x, start_y)
+    
+    def to_h_matrix(self):
+        return np.matrix([self.x, self.y, self.z], dtype=float)
     
     def xyz_to_matrix(self):
         horizontal_m = np.matrix([self.x, self.y, self.z, 1])
@@ -59,4 +65,12 @@ class Point:
                 break
         else:
             print("MAX ITERATION!!!")
+        return x, y, z
+    
+    @classmethod
+    def from_screen_coordinates(cls, screen_x, screen_y):
+        # Przekształć punkt z ekranu na przestrzeń trójwymiarową
+        x = ((screen_x - s_width/2) * cls.D) / (s_width/2)
+        y = ((screen_y + s_height/2) * cls.D) / (s_height/2)
+        z = -cls.D
         return x, y, z
